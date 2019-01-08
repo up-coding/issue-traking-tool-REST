@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const shortId = require('shortid');
 const secretKey = 'thisKeyIsWritenByTheKingInNorth';
 
+
 let generateToken = (data,callBack) =>{
     
     try{
@@ -24,7 +25,7 @@ let generateToken = (data,callBack) =>{
     }
 };
 
-let verifyClaim = ()=>{
+let verifyClaim = (token,secretKey,callBack)=>{
     jwt.verify(token,secretKey,(err,decodedInfo)=>{
         if(err){
            console.log('error while verify token');

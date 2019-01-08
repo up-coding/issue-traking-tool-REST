@@ -11,9 +11,9 @@ let checkEmail = (email) => {
   let password = (password) => {
     let passwordRegex = /^[A-Za-z0-9]\w{7,}$/
     if (password.match(passwordRegex)) {
-      return password
+      return password;
     } else {
-      return false
+      return false;
     }
   }
   

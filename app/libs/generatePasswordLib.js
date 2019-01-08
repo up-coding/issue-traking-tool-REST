@@ -6,6 +6,7 @@ const logger = require('../libs/loggerLib');
 let hashPassword = (plainTextPassword)=>{
     let salt = bcrypt.genSaltSync(saltRounds);
     let hash = bcrypt.hashSync(plainTextPassword,salt);
+    console.log(hash);
     return hash;
 }
 
