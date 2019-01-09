@@ -21,6 +21,7 @@ let signUpFunction = (req, res) => {
         return new Promise((resolve,reject)=>{
             if(req.body.email){
                 if(!validateInput.checkEmail(req.body.email)){
+                     
                     let response = responseLib.generateResponse(true,'Email is not correct',400,null);
                     reject(response);
                 }else if(check.isEmpty(req.body.password)){
@@ -153,17 +154,20 @@ let loginFunction = (req, res) => {
         });
     }
 
-    let generateToken = (userDetails)=>{
+    let genToken = (userDetails)=>{
         console.log('generate token');
         return new Promise((resolve,reject)=>{
             token.generateToken(userDetails,(err,tokenDetails)=>{
+                console.log(tokenDetails);
                  if(err){
                     console.log(err);
                     let response = responseLib.generateResponse(true,'Failed to generate token',500,null);
                     reject(response);
                  }else{
                      tokenDetails.userId = userDetails.userId;
+                      
                      tokenDetails.userDetails = userDetails;
+                   
                      resolve(tokenDetails);
                  }
             });
@@ -174,6 +178,7 @@ let loginFunction = (req, res) => {
         console.log('save token');
         return new Promise((resolve,reject)=>{
             AuthModel.findOne({userId:tokenDetails.userId},(err,retrievedTokenDetails)=>{
+                console.log(retrievedTokenDetails);
                if(err){
                   logger.error(err.message,'userController: saveToken()',10);
                   let response = responseLib.generateResponse(true,'Failed to generate token',500,null);
@@ -200,7 +205,7 @@ let loginFunction = (req, res) => {
                       }
                   });
                }else{
-                   retrievedTokenDetails.authToken = tokenDetails.authToken;
+                   retrievedTokenDetails.authToken = tokenDetails.token;
                    retrievedTokenDetails.tokenSecret = tokenDetails.tokenSecret;
                    retrievedTokenDetails.tokenGenerationTime = time.now();
                    retrievedTokenDetails.save((err,newTokenDetails)=>{
@@ -226,7 +231,7 @@ let loginFunction = (req, res) => {
 
     findUser(req,res)
     .then(validatePassword)
-    .then(generateToken)
+    .then(genToken)
     .then(saveToken)
     .then((resolve)=>{
         let response = responseLib.generateResponse(false,'Login successfull',200,resolve);
