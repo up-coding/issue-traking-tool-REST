@@ -26,7 +26,7 @@ const upload = multer({
   })
 })
 
-let fileUpload=upload.array('uploadedFiles',10);
+let fileUpload=upload.array('files',10);
 
 module.exports = {
     upload:fileUpload

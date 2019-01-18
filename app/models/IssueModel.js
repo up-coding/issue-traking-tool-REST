@@ -9,6 +9,10 @@ const issueSchema = new Schema({
         index:true,
         unique:true
     },
+    status:{
+      type:String,
+      default:''
+    },
     title:{
         type:String,
         default:''
@@ -18,21 +22,40 @@ const issueSchema = new Schema({
         type:String,
         default:''
     },
-    uploadedFiles:{
+    files:{
         type:[],
         default:[]
          
     },
     reporterId:{
-        type:String
+        type:String,
+        required:true
+    },
+    reporterName:{
+        type:String,
+        required:true
     },
     assigneeId:{
-        type:String
+        type: String,
+        default:''
+    },
+    assigneeName:{
+        type: String,
+        default:''
     },
     createdOn:{
         type:Date,
         default:time.now(),
+    },
+    modifiedOn:{
+        type:Date,
+        default:time.now()
+    },
+    filesLocation:{
+        type:[],
+        default:[]
     }
+
 
 });
 

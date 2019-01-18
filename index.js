@@ -11,12 +11,16 @@ const routeLoggerMiddleware = require('./app/middlewares/routeLogger.js');
 const globalErrorMiddleware = require('./app/middlewares/appErrorHandler');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const multer = require('multer');
+const socketLib = require('./app/libs/socketLib');
 //new file
 
 app.use(morgan('dev'));
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(routeLoggerMiddleware.logIp);
@@ -36,6 +40,7 @@ app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    res.header("Access-Control-Allow-Credentials", "true")
     next();
 });
 
@@ -70,6 +75,8 @@ console.log(appConfig);
 server.listen(appConfig.port);
 server.on('error', onError);
 server.on('listening', onListening);
+let connectSocket = socketLib.setServer(server);
+
 
 // end server listening code
 
