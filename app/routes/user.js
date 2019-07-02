@@ -1,23 +1,38 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const userController = require("./../../app/controllers/userController");
-const appConfig = require("./../../config/appConfig");
-const authMiddleware = require('../middlewares/auth');
+const appConfig = require("./../../confi/appConfig");
+const authMiddleware = require("../middlewares/auth");
 
-module.exports.setRouter = (app) => {
+module.exports.setRouter = app => {
+  let baseUrl = `${appConfig.apiVersion}/users`;
 
-    let baseUrl = `${appConfig.apiVersion}/users`;
+  // defining routes.
 
-    // defining routes.
+  app.get(
+    `${baseUrl}/view/all`,
+    authMiddleware.isAuthorized,
+    userController.getAllUser
+  );
+  app.get(
+    `${baseUrl}/:userId/details`,
+    authMiddleware.isAuthorized,
+    userController.getSingleUser
+  );
+  app.put(
+    `${baseUrl}/:userId/edit`,
+    authMiddleware.isAuthorized,
+    userController.editUser
+  );
+  app.post(
+    `${baseUrl}/:userId/delete`,
+    authMiddleware.isAuthorized,
+    userController.deleteUser
+  );
+  // params: firstName, lastName, email, mobileNumber, password
+  app.post(`${baseUrl}/signup`, userController.signUpFunction);
 
-    app.get(`${baseUrl}/view/all`,authMiddleware.isAuthorized,userController.getAllUser);
-    app.get(`${baseUrl}/:userId/details`,authMiddleware.isAuthorized,userController.getSingleUser);
-    app.put(`${baseUrl}/:userId/edit`,authMiddleware.isAuthorized,userController.editUser);
-    app.post(`${baseUrl}/:userId/delete`,authMiddleware.isAuthorized,userController.deleteUser);
-    // params: firstName, lastName, email, mobileNumber, password
-    app.post(`${baseUrl}/signup`, userController.signUpFunction);
-
-    /**
+  /**
      * @apiGroup users
      * @apiVersion  1.0.0
      * @api {post} /api/v1/users/login api for user login.
@@ -45,10 +60,10 @@ module.exports.setRouter = (app) => {
         }
     */
 
-    // params: email, password.
-    app.post(`${baseUrl}/login`,userController.loginFunction);
+  // params: email, password.
+  app.post(`${baseUrl}/login`, userController.loginFunction);
 
-    /**
+  /**
      * @apiGroup users
      * @apiVersion  1.0.0
      * @api {post} /api/v1/users/logout to logout user.
@@ -67,7 +82,10 @@ module.exports.setRouter = (app) => {
         }
     */
 
-    // auth token params: userId.
-    app.post(`${baseUrl}/logout`, authMiddleware.isAuthorized,userController.logout);
-
-}
+  // auth token params: userId.
+  app.post(
+    `${baseUrl}/logout`,
+    authMiddleware.isAuthorized,
+    userController.logout
+  );
+};
